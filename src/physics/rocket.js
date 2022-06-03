@@ -121,6 +121,19 @@ class Rocket {
                     (this.gamma + 1) / (this.gamma - 1)));
         return massfr;
     }
+    exhaustVelocity(gasPressure) {
+        ve = Math.sqrt(
+            this.t0 *
+            this.r *
+            2 * this.gamma *
+            (1 -
+                Math.pow(
+                    this.exhaustPressure / gasPressure,
+                    (this.gamma - 1) / this.gamma)
+            ) / (this.mw * (gamma - 1))
+        );
+        return ve;
+    }
 
 }
 export default Rocket;
