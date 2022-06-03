@@ -12,11 +12,11 @@ class Rocket {
         initialMass,
         burnTime,
         atmosphere,
-        massFlowRate,
         dragCoefficient,
         exhaustSpeed,
         exhaustArea,
-        exhaustPressure
+        exhaustPressure,
+        engineType
         //,numberOfEngines
     ) {
         this.position = position;
@@ -26,12 +26,22 @@ class Rocket {
         this.initialMass = initialMass;
         this.burnTime = burnTime;
         this.atmosphere = atmosphere;
-        this.massFlowRate = massFlowRate;
         this.dragCoefficient = dragCoefficient;
         this.exhaustSpeed = exhaustSpeed;
         this.area = 0.25 * Math.PI * rocketDiameter * rocketDiameter;
         this.exhaustArea = exhaustArea;
         this.exhaustPressure = exhaustPressure;
+        this.engineType = engineType;
+        if (this.engineType == 'F-1') {
+            this.p0 = 7000000;
+            this.at = 0.672;
+            this.ro = 5.2492;
+            this.gamma = 1.1507;
+            this.r4 = 8314;
+            this.mw = 22.186;
+            this.t0 = 3558.34;
+            this.r = this.r4 / this.mw;
+        }
         //this.velocity = speed ;
         //this.numberOfEngines=numberOfEngines
 
@@ -87,8 +97,8 @@ class Rocket {
         return lift;
     }
 
-    thrust(mass, exhaustVelocity, angle) {
-        thrustMagnitude = mass * exhaustVelocity + (this.exhaustPressure - atmosphere.getPressure()) * this.exhaustArea;
+    thrust(massfr, exhaustVelocity, angle) {
+        thrustMagnitude = massfr * exhaustVelocity + (this.exhaustPressure - atmosphere.getPressure()) * this.exhaustArea;
         let thrust = THREE.Vector3(
             Math.cos(angle) * thrustMagnitude,
             Math.sin(angle) * thrustMagnitude,
@@ -101,6 +111,15 @@ class Rocket {
         totalForce.add(lift);
         totalForce.add(weight);
         return totalForce;
+    }
+    massFlowRate() {
+        massfr =
+            this.p0 *
+            this.at *
+            Math.sqrt(this.gamma / (this.t0 * this.r)
+                * Math.pow(2 / this.gamma + 1,
+                    (this.gamma + 1) / (this.gamma - 1)));
+        return massfr;
     }
 
 }
