@@ -1,179 +1,180 @@
 import { normalize } from "gsap/gsap-core";
+import { Vector3 } from 'three'
 
-var vector = {
-    _x: 0,
-    _y: 0,
-    _z: 0,
+class Vector extends Vector3 {
+    constructor(x, y, z) {
+        super(x, y, z);
+    }
 
-    create: function (x, y, z) {
-        var object = Object.create(this);
-        object.setX(x);
-        object.setY(y);
-        object.setZ(z);
-        return object;
-    },
+    // create: function (x, y, z) {
+    //     var object = Object.create(this);
+    //     object.setX(x);
+    //     object.setY(y);
+    //     object.setZ(z);
+    //     return object;
+    // },
 
     /*
     set coordiantes
     */
-    setX: function (value) {
-        this._x = value;
-    },
-    setY: function (value) {
-        this._y = value;
-    },
-    setZ: function (value) {
-        this._z = value;
-    },
+    // setX: function (value) {
+    //     this._x = value;
+    // },
+    // setY: function (value) {
+    //     this._y = value;
+    // },
+    // setZ: function (value) {
+    //     this._z = value;
+    // },
     /*
     set angles 
     */
-    setAngleXY: function (value) {
+    // setAngleXY (value) {
 
-    },
-    setAngleXZ: function (value) {
+    // }
+    // setAngleXZ (value) {
 
-    },
-    setAngleYZ: function (value) {
+    // }
+    // setAngleYZ(value) {
 
-    },
+    // }
 
     /*
     get coordiantes
     */
-    getX: function () {
-        return this._x;
-    },
-    getY: function () {
-        return this._y;
-    },
-    getZ: function () {
-        return this._z;
-    },
+    // getX: function () {
+    //     return this._x;
+    // },
+    // getY: function () {
+    //     return this._y;
+    // },
+    // getZ: function () {
+    //     return this._z;
+    // },
 
     /*
    get angles 
    */
-    getAngleXY: function () {
-        return Math.atan2(this._y / this._x, 0);
+    getAngleXY() {
+        return Math.atan2(this.y / this.x, 0);
 
-    },
-    getAngleXZ: function () {
-        return Math.atan2(this._z / this._x, 0);
+    }
+    getAngleXZ() {
+        return Math.atan2(this.z / this.x, 0);
 
 
-    },
-    getAngleYZ: function () {
-        return Math.atan(this._z / this._y, 0);
+    }
+    getAngleYZ() {
+        return Math.atan(this.z / this.y, 0);
 
-    },
+    }
 
     /*
     add vectors
     */
-    add: function (vector) {
-        return vector.create(
-            this._x + vector.getX(),
-            this._y + vector.getY(),
-            this._z + vector.getZ(),
-        );
-    },
+    // add: function (vector) {
+    //     return vector.create(
+    //         this._x + vector.getX(),
+    //         this._y + vector.getY(),
+    //         this._z + vector.getZ(),
+    //     );
+    // },
     /*
     subtract vectors
     */
-    subtract: function (vector) {
-        return vector.create(
-            this._x - vector.getX(),
-            this._y - vector.getY(),
-            this._z - vector.getZ(),
-        );
-    },
+    // subtract: function (vector) {
+    //     return vector.create(
+    //         this._x - vector.getX(),
+    //         this._y - vector.getY(),
+    //         this._z - vector.getZ(),
+    //     );
+    // },
     /*
    multiply a vector by a scalar
    */
-    multiplyScalar: function (scalar) {
-        return vector.create(
-            this._x * scalar,
-            this._y * scalar,
-            this._z * scalar,
-        );
-    },
+    // multiplyScalar: function (scalar) {
+    //     return vector.create(
+    //         this._x * scalar,
+    //         this._y * scalar,
+    //         this._z * scalar,
+    //     );
+    // },
     /*
    divide a vector by a scalar
    */
-    divideScalar: function (scalar) {
-        return vector.create(
-            this._x / scalar,
-            this._y / scalar,
-            this._z / scalar,
-        );
-    },
+    // divideScalar: function (scalar) {
+    //     return vector.create(
+    //         this._x / scalar,
+    //         this._y / scalar,
+    //         this._z / scalar,
+    //     );
+    // },
     /*
     vector magnitude or length
     */
-    getMagnitude: function () {
-        return Math.sqrt(this._x * this._x + this._y * this._y + this._z * this._z);
-    },
+    getMagnitude() {
+        return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+    }
     /*
     normalize a vector 
     */
-    normalize: function () {
-        if (this.getMagnitude() > 1) {
-            return vector.create(
-                this._x / this.getMagnitude(),
-                this._y / this.getMagnitude(),
-                this._z / this.getMagnitude(),
-            );
-        }
+    // normalize: function () {
+    //     if (this.getMagnitude() > 1) {
+    //         return vector.create(
+    //             this._x / this.getMagnitude(),
+    //             this._y / this.getMagnitude(),
+    //             this._z / this.getMagnitude(),
+    //         );
+    //     }
 
-    },
+    // },
     /*
     distance between two vectors 
     */
-    distance2Vectors: function (vector) {
-        return Math.sqrt(
-            (vector.getX() - this._x) * (vector.getX() - this._x)
-            + (vector.getY() - this._y) * (vector.getY() - this._y)
-            + (vector.getZ() - this._z) * (vector.getZ() - this._z)
-        );
-    },
+    // distance2Vectors: function (vector) {
+    //     return Math.sqrt(
+    //         (vector.getX() - this._x) * (vector.getX() - this._x)
+    //         + (vector.getY() - this._y) * (vector.getY() - this._y)
+    //         + (vector.getZ() - this._z) * (vector.getZ() - this._z)
+    //     );
+    // },
     /*
     vectors dot product
     */
-    multiplyVector: function (vector) {
-        return this._x * vector.getX() +
-            this._y * vector.getY() +
-            this._z * vector.getZ();
+    // multiplyVector: function (vector) {
+    //     return this._x * vector.getX() +
+    //         this._y * vector.getY() +
+    //         this._z * vector.getZ();
 
-    },
+    // },
     /*
     vector projection
     */
     /*
     vector cross product
     */
-    crossProduct: function (vector) {
-        return vector.create(
-            this._z * vector.getY() - this._y * vector.getZ(),
-            this._z * vector.getX() - this._x * vector.getZ(),
-            this._y * vector.getX() - this._x * vector.getY()
-        );
-    },
+    // crossProduct: function (vector) {
+    //     return vector.create(
+    //         this._z * vector.getY() - this._y * vector.getZ(),
+    //         this._z * vector.getX() - this._x * vector.getZ(),
+    //         this._y * vector.getX() - this._x * vector.getY()
+    //     );
+    // },
     /*
     invert vector
     */
-    invert: function () {
-        return vector.create(
-            -1 * this._x,
-            -1 * this._y,
-            -1 * this._z
-        );
-    },
+    // invert: function () {
+    //     return vector.create(
+    //         -1 * this._x,
+    //         -1 * this._y,
+    //         -1 * this._z
+    //     );
+    // },
     /*
     square the magnitude
     */
-    squareMagnitude: function () {
-        this._x * this._x + this._y * this._y + this._z * this._z
-    },
+    squareMagnitude() {
+        this.x * this.x + this.y * this.y + this.z * this.z
+    }
 
-};
+} export default Vector;

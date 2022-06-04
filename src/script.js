@@ -1,6 +1,11 @@
 import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { Vector3 } from 'three'
+import './physics/vector'
+import './physics/atmosphere'
+import Atmosphere from './physics/atmosphere'
+import Vector from './physics/vector'
 
 const textureLoader = new THREE.TextureLoader()
 
@@ -41,6 +46,7 @@ const scene = new THREE.Scene()
 //material.matcap = matcapTexture
 
 const material = new THREE.MeshDepthMaterial()
+
 
 const sphere = new THREE.Mesh(
     new THREE.SphereBufferGeometry(0.5, 16, 16), material

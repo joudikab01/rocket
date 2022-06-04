@@ -1,4 +1,3 @@
-import { Vector3 } from "three";
 import atmosphere from "./atmosphere";
 import vector from "./vector";
 
@@ -16,10 +15,12 @@ class Rocket {
         exhaustSpeed,
         exhaustArea,
         exhaustPressure,
-        engineType
+        engineType,
+        liftCoeff
         //,numberOfEngines
     ) {
         this.position = position;
+        this.liftCoeff = liftCoeff;
         this.seaLevelThrustPerEngine = seaLevelThrustPerEngine;
         this.vacuumThrustPerEngine = vacuumThrustPerEngine;
         this.rocketDiameter = rocketDiameter;
@@ -46,16 +47,17 @@ class Rocket {
         //this.numberOfEngines=numberOfEngines
 
     }
-    atmosphere = new Atmosphere(position.z);
+    atmosphere = new atmosphere(position.z);
     weight(altitude, mass) {
-        return THREE.Vector3(0, -(mass * 6.673 * 5.98 * Math.pow(10, 13)) / (altitude * altitude), 0);
+        let w = -1 * (mass * 6.673 * 5.98 * Math.pow(10, 13)) / (altitude * altitude);
+        return vector(0, w, 0);
 
     }
 
     drag(density, velocity) {
         let velocitySquere = velocity.squereMagnitude();
         let normalize = velocity.normalize();
-        let drag = new THREE.Vector3(
+        let drag = new vector(
             ((velocitySquere * -1) / 2) *
             this.drag_coeff *
             density *
@@ -77,29 +79,19 @@ class Rocket {
 
 
     lift(density) {
-        let lift_coeff =
-            -0.05 +
-            Math.sqrt(
-                0.0025 +
-                (0.36 * this.raduis * this.angular_velocity.getMagnitude()) /
-                this.velocity.getMagnitude()
-            ); // cl=r*ω/v
-
         let velocitySquere = this.velocity.squereMagnitude();
-
         let cross = this.rotateAxes.cross(this.velocity);
-
-        let lift = new THREE.Vector3(
-            ((velocitySquere * 1) / 2) * lift_coeff * density * this.area * cross.getX(),
-            ((-velocitySquere * 1) / 2) * lift_coeff * density * this.area * cross.getY(),
-            ((velocitySquere * 1) / 2) * lift_coeff * density * this.area * cross.getZ()
+        let lift = new vector(
+            ((velocitySquere * 1) / 2) * liftCoeff * density * this.area * cross.getX(),
+            ((-velocitySquere * 1) / 2) * liftCoeff * density * this.area * cross.getY(),
+            ((velocitySquere * 1) / 2) * liftCoeff * density * this.area * cross.getZ()
         );
         return lift;
     }
 
     thrust(massfr, exhaustVelocity, angle) {
         thrustMagnitude = massfr * exhaustVelocity + (this.exhaustPressure - atmosphere.getPressure()) * this.exhaustArea;
-        let thrust = THREE.Vector3(
+        let thrust = vector(
             Math.cos(angle) * thrustMagnitude,
             Math.sin(angle) * thrustMagnitude,
             0
