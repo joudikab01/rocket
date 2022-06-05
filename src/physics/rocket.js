@@ -48,9 +48,22 @@ class Rocket {
 
     }
     atmosphere = new atmosphere(position.z);
-    weight(altitude, mass) {
-        let w = -1 * (mass * 6.673 * 5.98 * Math.pow(10, 13)) / (altitude * altitude);
-        return vector(0, w, 0);
+    // weight(altitude, mass) {
+    //     let w = -1 * (mass * 6.673 * 5.98 * Math.pow(10, 13)) / (altitude * altitude);
+    //     return vector(0, w, 0);
+
+    // }
+    weight(mass, mesh) {
+        let gravity = new THREE.Vector3(
+            mesh.position.x,
+            mesh.position.y + 6371000,
+            mesh.position.z
+
+        );
+        let altitude = Math.sqrt(gravity.x * gravity.x + gravity.y * gravity.y + gravity.z * gravity.z)
+        gravity.normalize();
+
+        return gravity.multiplyScalar(6.673 * 5.972 * (1e13) * mass / (altitude * altitude));
 
     }
 
