@@ -177,4 +177,5 @@ class Vector extends Vector3 {
         this.x * this.x + this.y * this.y + this.z * this.z
     }
 
-} export default Vector;
+} 
+//export default Vector;
