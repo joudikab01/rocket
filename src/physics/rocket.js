@@ -33,7 +33,7 @@ class Rocket {
     ) {
         this.numberOfEngines=numberOfEngines
         this.force_angle=force_angle
-        this.scale=1;
+        this.scale=0.00001;
         this.mesh = mesh;
         this.liftCoeff = liftCoeff;             
         this.rocketDiameter = rocketDiameter;
@@ -102,7 +102,6 @@ rocketArea(){
     massFlowRate() {
         //console.log(this.r)
         this.mass_flow_rate=
-            this.scale*
              this.p0 *
              this.at *
              Math.sqrt( this.gamma / (this.t0 * this.r)
@@ -116,7 +115,7 @@ rocketArea(){
 
 
      exhaustVelocity() { 
-           this.exhaust_Velocity =this.scale* Math.sqrt(
+           this.exhaust_Velocity =Math.sqrt(
                this.t0 *
                this.r *
                2 * this.gamma *
@@ -167,7 +166,7 @@ rocketArea(){
             this.atmosphere.density *
             this.rocketArea())
         
-        return this.dvector;
+        return this.dvector.multiplyScalar(this.scale);
     }
 
 
@@ -181,14 +180,13 @@ rocketArea(){
             this.atmosphere.density *
             this.rocketArea())
         this.lvector.applyAxisAngle(this.velocity,Math.PI/2)    
-        return this.lvector;
+        return this.lvector.multiplyScalar(this.scale);
     }
 
     thrust() {
         if(this.fuel_mass==0) return new Vector3(0,0,0)
-        this.thrustMagnitude = this.massFlowRate() * this.exhaustVelocity() 
-        + (this.scale*this.exhaust_Pressure - this.scale*this.atmosphere.getPressure()) 
-        *-1* this.exhaust_Area;
+        this.thrustMagnitude = this.scale*this.massFlowRate() * this.exhaustVelocity() 
+        + this.scale * (this.exhaust_Pressure - this.atmosphere.getPressure()) *-1* this.exhaust_Area;
         //Math.atan2(this.total_force.y / this.total_force.x, 0)
         this.tvector = new Vector3(
             Math.cos(this.force_angle) * this.thrustMagnitude,
