@@ -11,32 +11,29 @@ class Rocket {
 
         rocket_mass,
         fuel_mass,
-        //total_mass,
         mass_flow_rate,
 
         burnTime,
-        //atmosphere,
         dragCoefficient,
 
-        //exhaust_Velocity,
         exhaust_Area,
         exhaust_Pressure,
 
         engineType,
         liftCoeff,
 
-        //launch_altitude,
+     
         altitude,
 
-        //acceleration,
-        //velocity,
         thrustMagnitude,
 
-        //total_force
-        //,numberOfEngines
+        force_angle,
+      
+        numberOfEngines
     ) {
-       
-        this.scale=0.000005;
+        this.numberOfEngines=numberOfEngines
+        this.force_angle=force_angle
+        this.scale=1;
         this.mesh = mesh;
         this.liftCoeff = liftCoeff;             
         this.rocketDiameter = rocketDiameter;
@@ -45,7 +42,6 @@ class Rocket {
         
         this.dragCoefficient = dragCoefficient;
         
-        //this.area = 0.25 * Math.PI * rocketDiameter * rocketDiameter;
         this.engineType = engineType;
         this.launch_altitude=altitude;
         this.altitude=altitude;
@@ -60,13 +56,14 @@ class Rocket {
 
         this.rocket_mass=rocket_mass;
         this.fuel_mass=fuel_mass;
-        this.total_mass=this.rocket_mass+this.fuel_mass;
+        this.total_mass=this.total_mass;
         this.mass_flow_rate=mass_flow_rate;
         this.wvector=new Vector3(0,0,0);
         this.lvector=new Vector3(0,0,0);
         this.tvector=new Vector3(0,0,0);;
         this.dvector=new Vector3(0,0,0);
         this.total_force= new Vector3(0,0,0);
+        this.altitude_status;
         
         this.atmosphere = new Atmosphere(this.altitude);
     
@@ -84,12 +81,24 @@ class Rocket {
             this.t0 = 3558.34;
             this.r = this.r4 / this.mw;
         }
+        else{
+            this.p0 = 5260700;
+            this.at = 0.109;
+            this.ro = 2.3693;
+            this.gamma = 1.1455;
+            this.r4 = 8314; 
+            this.mw = 12.631;
+            this.t0 = 3372.93;
+            this.r = this.r4 / this.mw;
+        }
+        this.total_mass=this.fuel_mass+this.rocket_mass
 
     }
    
 rocketArea(){
     return 0.25 * Math.PI * this.rocketDiameter * this.rocketDiameter;
 }
+
     massFlowRate() {
         //console.log(this.r)
         this.mass_flow_rate=
@@ -129,8 +138,13 @@ rocketArea(){
             this.mesh.position.z
 
         );
-        let k = gravity.length(); 
         
+        let k = gravity.length(); 
+        // if(k==637100)
+        // {
+        //     this.altitude_status=0;
+        //     return this.wvector().multiplyScalar(0);
+        // }
         this.altitude=k-6371000;
         //Math.sqrt(gravity.x * gravity.x + gravity.y * gravity.y + gravity.z * gravity.z)
         gravity.normalize();
@@ -175,19 +189,23 @@ rocketArea(){
         this.thrustMagnitude = this.massFlowRate() * this.exhaustVelocity() 
         + (this.scale*this.exhaust_Pressure - this.scale*this.atmosphere.getPressure()) 
         *-1* this.exhaust_Area;
-        let force_angle=Math.PI/2;
         //Math.atan2(this.total_force.y / this.total_force.x, 0)
         this.tvector = new Vector3(
-            Math.cos(force_angle) * this.thrustMagnitude,
-            Math.sin(force_angle) * this.thrustMagnitude,
+            Math.cos(this.force_angle) * this.thrustMagnitude,
+            Math.sin(this.force_angle) * this.thrustMagnitude,
             0
-        );
+        )
+    //  if(this.altitude_status)
+    //  {
+    //     return this.tvector().multiplyScalar(0)
+    //  }
+
         return this.tvector;
     }
 
 
     total() {
-        this.total_force= this.weight().clone().add(this.thrust());
+        this.total_force= this.weight().clone().add(this.thrust().clone().multiplyScalar(this.numberOfEngines));
         this.total_force.add(this.lift())
           this.total_force.add(this.drag())
         return this.total_force;
@@ -204,7 +222,17 @@ rocketArea(){
 
     new_position(delta_time){
       this.mesh.position.add(this.velocity.clone().multiplyScalar(delta_time));
-       //this.fuel_mass-= this.massFlowRate() * delta_time;
+
+      if(this.fuel_mass>=this.massFlowRate()*delta_time*this.numberOfEngines)
+        {
+        this.fuel_mass-= this.massFlowRate() * delta_time*this.numberOfEngines;
+        }
+
+       else
+        {
+            this.fuel_mass=0;
+        }
+        this.total_mass=this.fuel_mass+this.rocket_mass
         // this.mesh.x+=this.velocity.clone().x*(delta_time)
         // this.mesh.y+=this.velocity.clone().y*(delta_time)
         // this.mesh.z+=this.velocity.clone().z*(delta_time)

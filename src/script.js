@@ -13,6 +13,7 @@ const gui = new dat.GUI();
 const scene = new THREE.Scene()
 
 const rocket = new Rocket();
+rocket.force_angle=Math.PI/2
 
 
 const geometry = new THREE.BoxGeometry(0.4,0.4,0.4)
@@ -24,6 +25,7 @@ const material = new THREE.MeshBasicMaterial({
 
 
 rocket.mesh= new THREE.Mesh( geometry, material );
+
 scene.add( rocket.mesh );
 
 
@@ -76,9 +78,10 @@ window.addEventListener('resize', () =>
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.z = 3
-
-scene.add(camera)
+//camera.position.y=rocket.mesh.position.y
 camera.lookAt(rocket.mesh.position)
+scene.add(camera)
+
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
@@ -100,13 +103,13 @@ function setupKeyControls() {
     document.onkeydown = function(e) {
       switch (e.keyCode) {
         case 37:
-          parameters.angle+= 0.01;
+          rocket.force_angle+= 0.01;
         break;
         case 38:
       //   thrustMagnitude.v += 0.01;
         break;
         case 39:
-          parameters.angle -= 0.01;
+          rocket.force_angle -= 0.01;
         break;
         case 40:
         //thrustMagnitude.v -= 0.01;
@@ -115,8 +118,9 @@ function setupKeyControls() {
     };
   }
  
-rocket.check_engine(1)
-rocket.total_mass=120
+
+
+
 
 rocket.rocketDiameter=2;
 rocket.rocket_mass=2
@@ -126,7 +130,8 @@ rocket.liftCoeff=1;
 rocket.burnTime=210;
 rocket.exhaust_Area=2;
 rocket.exhaust_Pressure=9;
-
+rocket.numberOfEngines=10
+rocket.check_engine(1)
 
 // Animate
 const clock = new THREE.Clock()
@@ -146,7 +151,7 @@ const tick = () =>
     rocket.new_position(delteTime);
     
      //rocket.mesh.position.add(rocket.thrust().clone().multiplyScalar(delteTime));
-      console.log(rocket.rocketArea())
+      console.log(rocket)
     
 
 
