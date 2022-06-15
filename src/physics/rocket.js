@@ -29,11 +29,12 @@ class Rocket {
 
         force_angle,
       
-        numberOfEngines
+        numberOfEngines,
+        //stability_margin
     ) {
         this.numberOfEngines=numberOfEngines
         this.force_angle=force_angle
-        this.scale=0.00001;
+        this.scale=0.01;
         this.mesh = mesh;
         this.liftCoeff = liftCoeff;             
         this.rocketDiameter = rocketDiameter;
@@ -66,6 +67,8 @@ class Rocket {
         this.altitude_status;
         
         this.atmosphere = new Atmosphere(this.altitude);
+
+        //this.stability_margin = stability_margin
     
     }
 
@@ -209,8 +212,12 @@ rocketArea(){
         return this.total_force;
     }
 
+    // torque(){
+    //     let t = this.lift().clone().multiplyScalar(this.stability_margin)
+    // }
+
     new_acceleration(){
-      return this.acceleration=this.total().multiplyScalar(1/this.total_mass)
+      return this.acceleration=this.total().multiplyScalar(this.scale/this.total_mass)
     }
      
     new_velocity(delta_time){
@@ -220,6 +227,9 @@ rocketArea(){
 
     new_position(delta_time){
       this.mesh.position.add(this.velocity.clone().multiplyScalar(delta_time));
+        // this.mesh.x+=this.velocity.clone().x*(delta_time)
+        // this.mesh.y+=this.velocity.clone().y*(delta_time)
+        // this.mesh.z+=this.velocity.clone().z*(delta_time)
 
       if(this.fuel_mass>=this.massFlowRate()*delta_time*this.numberOfEngines)
         {
@@ -231,9 +241,8 @@ rocketArea(){
             this.fuel_mass=0;
         }
         this.total_mass=this.fuel_mass+this.rocket_mass
-        // this.mesh.x+=this.velocity.clone().x*(delta_time)
-        // this.mesh.y+=this.velocity.clone().y*(delta_time)
-        // this.mesh.z+=this.velocity.clone().z*(delta_time)
+        
+        
     }  
 
 }
