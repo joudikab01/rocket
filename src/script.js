@@ -16,7 +16,7 @@ const rocket = new Rocket();
 
 
 
-const geometry = new THREE.ConeGeometry(0.5,2)
+const geometry = new THREE.ConeGeometry(0.2,1)
 const material = new THREE.MeshBasicMaterial({
   color: 0xff0000,
   wireframe : false
@@ -26,8 +26,8 @@ const material = new THREE.MeshBasicMaterial({
 
 rocket.mesh= new THREE.Mesh( geometry, material );
 
-scene.add( rocket.mesh );
-const axesHelper = new THREE.AxesHelper( 5 );
+scene.add(rocket.mesh);
+const axesHelper = new THREE.AxesHelper( 100 );
 scene.add( axesHelper );
 
 const Parameters = {
@@ -104,14 +104,14 @@ function setupKeyControls() {
     document.onkeydown = function(e) {
       switch (e.keyCode) {
         case 37:
-          rocket.force_angle += 0.1;
+          rocket.force_angle += 1;
           
         break;
         case 38:
       //   thrustMagnitude.v += 0.01;
         break;
         case 39:
-          rocket.force_angle -= 0.1;
+          rocket.force_angle -= 1;
         break;
         case 40:
         //thrustMagnitude.v -= 0.01;
@@ -122,10 +122,10 @@ function setupKeyControls() {
  
 
 
-
+rocket.engineType=1
 rocket.force_angle=Math.PI/2;
 rocket.rocketDiameter=2;
-rocket.rocket_mass=2
+rocket.rocket_mass=200
 rocket.fuel_mass=20000;
 rocket.dragCoefficient=0.75
 rocket.liftCoeff=1;
@@ -133,7 +133,7 @@ rocket.burnTime=210;
 rocket.exhaust_Area=2;
 rocket.exhaust_Pressure=9;
 rocket.numberOfEngines=1
-rocket.check_engine(1)
+rocket.check_engine()
 
 // Animate
 const clock = new THREE.Clock()
@@ -155,8 +155,6 @@ const tick = () =>
      //rocket.mesh.position.add(rocket.thrust().clone().multiplyScalar(delteTime));
      
       console.log(rocket)
-    
-
 
     // Update controls
     controls.update()

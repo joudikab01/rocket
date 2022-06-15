@@ -72,9 +72,9 @@ class Rocket {
     
     }
 
-    check_engine(type){
+    check_engine(){
        // type ==1 refrenced for engine f-1 
-        if (type == 1) {
+        if (this.engineType == 1) {
             this.p0 = 7000000;
             this.at = 0.672;
             this.ro = 5.2492;
@@ -187,9 +187,10 @@ rocketArea(){
     }
 
     thrust() {
-        if(this.fuel_mass==0) return new Vector3(0,0,0)
-        this.thrustMagnitude = this.scale*this.massFlowRate() * this.exhaustVelocity() 
-        + this.scale * (this.exhaust_Pressure - this.atmosphere.getPressure()) *-1* this.exhaust_Area;
+        if(this.fuel_mass==0) {this.tvector=new THREE.Vector3(0,0,0)
+        return this.tvector}
+        this.thrustMagnitude = this.massFlowRate() * this.exhaustVelocity() 
+        +  (this.exhaust_Pressure - this.atmosphere.getPressure()) *-1* this.exhaust_Area;
         //Math.atan2(this.total_force.y / this.total_force.x, 0)
         this.tvector = new Vector3(
             Math.cos(this.force_angle) * this.thrustMagnitude,
@@ -201,7 +202,7 @@ rocketArea(){
     //     return this.tvector().multiplyScalar(0)
     //  }
 
-        return this.tvector;
+        return this.tvector.multiplyScalar(this.scale);
     }
 
 
